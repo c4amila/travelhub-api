@@ -5,10 +5,12 @@ import com.c4mila.travelhub_api.voo.domain.model.Voo;
 import com.c4mila.travelhub_api.voo.domain.repository.VooRepository;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooResponse;
 import com.c4mila.travelhub_api.voo.infrastructure.exception.VooJaCadastradoException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 public class VooService {
     private final VooRepository vooRepository;
 
@@ -22,6 +24,8 @@ public class VooService {
 
         boolean vooExiste = vooRepository.existsByNumeroVoo(request.numeroVoo());
         if (vooRepository.existsByNumeroVoo(numeroVoo)){
+            log.warn("Tentativa de cadastro de voo duplicado. numeroVoo={}", numeroVoo);
+
             throw new VooJaCadastradoException(
                     "Já existe um voo cadastrado com este número."
             );
@@ -38,6 +42,10 @@ public class VooService {
         );
 
         Voo vooCadastrado = vooRepository.save(voo);
+
+        log.info("Voo cadastrado com sucesso. id={}, numeroVoo={}",
+                vooCadastrado.getId(), vooCadastrado.getNumeroVoo()
+        );
 
         return VooResponse.from(vooCadastrado);
     }
