@@ -21,7 +21,7 @@ public class VooService {
         String numeroVoo = request.numeroVoo().trim().toUpperCase();
 
         boolean vooExiste = vooRepository.existsByNumeroVoo(request.numeroVoo());
-        if (vooExiste){
+        if (vooRepository.existsByNumeroVoo(numeroVoo)){
             throw new VooJaCadastradoException(
                     "Já existe um voo cadastrado com este número."
             );
