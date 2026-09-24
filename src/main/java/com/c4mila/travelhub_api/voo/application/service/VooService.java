@@ -5,6 +5,7 @@ import com.c4mila.travelhub_api.voo.domain.model.Voo;
 import com.c4mila.travelhub_api.voo.domain.repository.VooRepository;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooResponse;
 import com.c4mila.travelhub_api.voo.infrastructure.exception.VooJaCadastradoException;
+import com.c4mila.travelhub_api.voo.infrastructure.exception.VooNaoEncontradoException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,5 +49,20 @@ public class VooService {
         );
 
         return VooResponse.from(vooCadastrado);
+    }
+
+    @Transactional(readOnly = true)
+    public VooResponse buscarVoo(Long id){
+        Voo voo = vooRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Voo não encontrado. id={}", id);
+                    return new VooNaoEncontradoException(
+                            "Voo não encontrado."
+                    );
+                });
+
+        log.info("Voo encontrado. id={}, numeroVoo={}", voo.getId(), voo.getNumeroVoo());
+
+        return VooResponse.from(voo);
     }
 }
