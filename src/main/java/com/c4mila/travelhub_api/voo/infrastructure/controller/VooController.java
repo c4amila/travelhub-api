@@ -1,0 +1,34 @@
+package com.c4mila.travelhub_api.voo.infrastructure.controller;
+
+import com.c4mila.travelhub_api.voo.application.service.VooService;
+import com.c4mila.travelhub_api.voo.domain.model.Voo;
+import com.c4mila.travelhub_api.voo.infrastructure.dto.VooRequest;
+import com.c4mila.travelhub_api.voo.infrastructure.dto.VooResponse;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
+
+import static com.c4mila.travelhub_api.voo.infrastructure.controller.RestConstants.PATH_VOOS;
+
+@RestController
+@RequestMapping(PATH_VOOS)
+public class VooController {
+    private final VooService vooService;
+
+    public VooController(VooService vooService) {
+        this.vooService = vooService;
+    }
+
+    @PostMapping("/cadastrar")
+    public ResponseEntity<VooResponse> cadastrar(@Valid @RequestBody VooRequest request){
+        VooResponse vooResponse = vooService.cadastrarVoo(request);
+
+        return ResponseEntity.created(URI.create(PATH_VOOS + "/" + vooResponse.id()))
+                .body(vooResponse);
+    }
+}
