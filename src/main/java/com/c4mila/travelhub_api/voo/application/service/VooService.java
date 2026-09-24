@@ -10,6 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class VooService {
@@ -64,5 +68,13 @@ public class VooService {
         log.info("Voo encontrado. id={}, numeroVoo={}", voo.getId(), voo.getNumeroVoo());
 
         return VooResponse.from(voo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<VooResponse> listarVoos(){
+        return vooRepository.findAll()
+                .stream()
+                .map(VooResponse::from)
+                .toList();
     }
 }
