@@ -5,7 +5,7 @@ O projeto simula um sistema real de agência de turismo, com regras de negócio 
 
 ---
 ## Tecnologias
-- **Java 21**
+- **Java 17**
 - **Spring Boot 4.1.1**
 - **Spring Data JPA**
 - **PostgreSQL**
