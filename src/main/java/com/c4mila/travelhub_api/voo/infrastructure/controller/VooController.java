@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 import static com.c4mila.travelhub_api.voo.infrastructure.controller.RestConstants.PATH_VOOS;
 
@@ -34,5 +35,11 @@ public class VooController {
         VooResponse response = vooService.buscarVoo(id);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<VooResponse>> listar(){
+        List<VooResponse> vooResponses = vooService.listarVoos();
+        return ResponseEntity.ok(vooResponses);
     }
 }
