@@ -17,19 +17,19 @@ public class Voo extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "O numero do voo é obrigatório")
     @Column(name = "numero_voo", nullable = false, unique = true, length = 20)
     private String numeroVoo;
 
-    @NotBlank
+    @NotBlank(message = "o nome da companhia é obrigatório")
     @Column(nullable = false, length = 100)
     private String companhia;
 
-    @NotBlank
+    @NotBlank(message = "a origem é obrigatória")
     @Column(nullable = false, length = 100)
     private String origem;
 
-    @NotBlank
+    @NotBlank(message = "o destino é obrigatório")
     @Column(nullable = false, length = 100)
     private String destino;
 
