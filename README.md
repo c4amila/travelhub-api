@@ -21,5 +21,7 @@ O projeto simula um sistema real de agência de turismo, com regras de negócio 
 Em breve
 
 ## Principais Endpoints
-
-Em breve
+| **Método** | **Endpoint** | **Descrição**        |
+|------------|--------------|----------------------|
+| POST       | `/voos`      | Cadastra um voo novo 
+| GET        | `/voos/{id}` | Busca voo por id
