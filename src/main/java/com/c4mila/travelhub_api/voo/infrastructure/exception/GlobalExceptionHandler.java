@@ -28,6 +28,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(VooNaoEncontradoException.class)
+    public ResponseEntity<Object> tratarVooNaoEncontrado(VooNaoEncontradoException e, WebRequest request){
+        return criarRespostaErro(
+                e,
+                "VOO_NAO_ENCONTRADO",
+                e.getMessage(),
+                List.of(),
+                HttpStatus.NOT_FOUND,
+                request
+        );
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException e,
