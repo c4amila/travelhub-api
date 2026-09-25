@@ -5,12 +5,14 @@ import com.c4mila.travelhub_api.voo.domain.enums.StatusVoo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "voo")
 public class Voo extends AuditableEntity {
     @Id
