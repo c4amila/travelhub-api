@@ -73,10 +73,15 @@ public class VooService {
 
     @Transactional(readOnly = true)
     public List<VooResponse> listarVoos(){
-        return vooRepository.findAll()
+
+        List<VooResponse> voos = vooRepository.findAll()
                 .stream()
                 .map(VooResponse::from)
                 .toList();
+
+        log.info("Listagem de voos concluída. {} voos", voos.size());
+
+        return voos;
     }
 
     @Transactional(readOnly = true)
