@@ -23,5 +23,7 @@ Em breve
 ## Principais Endpoints
 | **Método** | **Endpoint** | **Descrição**        |
 |------------|--------------|----------------------|
-| POST       | `/voos`      | Cadastra um voo novo 
-| GET        | `/voos/{id}` | Busca voo por id
+| POST       | `/voos`      | Cadastra um voo novo | 
+| GET        | `/voos/{id}` | Busca voo por id     |
+| GET        | `/voos`      | Listar todos os voos |
+| GET        | `/voos/filtrar`| Filtrar voos       |
