@@ -2,6 +2,7 @@ package com.c4mila.travelhub_api.voo.infrastructure.controller;
 
 import com.c4mila.travelhub_api.voo.application.service.VooService;
 import com.c4mila.travelhub_api.voo.domain.model.Voo;
+import com.c4mila.travelhub_api.voo.infrastructure.dto.AtualizarVooRequest;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooRequest;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooResponse;
 import jakarta.validation.Valid;
@@ -52,5 +53,13 @@ public class VooController {
         List<VooResponse> vooResponse = vooService.filtrarVoos(origem, destino, companhia);
 
         return ResponseEntity.ok(vooResponse);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<VooResponse> atualizarVoo(@PathVariable Long id,
+                                                    @Valid @RequestBody AtualizarVooRequest request){
+        VooResponse vooResponse = vooService.atualizarVoo(id, request);
+        return ResponseEntity.ok(vooResponse);
+
     }
 }
