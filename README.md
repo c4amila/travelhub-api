@@ -27,3 +27,4 @@ Em breve
 | GET        | `/voos/{id}` | Busca voo por id     |
 | GET        | `/voos`      | Listar todos os voos |
 | GET        | `/voos/filtrar`| Filtrar voos       |
+ | PATCH     | `/voos/{id}` | Atualizar voo        |
