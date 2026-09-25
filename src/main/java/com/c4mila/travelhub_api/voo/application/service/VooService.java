@@ -29,7 +29,6 @@ public class VooService {
     public VooResponse cadastrarVoo(VooRequest request){
         String numeroVoo = request.numeroVoo().trim().toUpperCase();
 
-        boolean vooExiste = vooRepository.existsByNumeroVoo(request.numeroVoo());
         if (vooRepository.existsByNumeroVoo(numeroVoo)){
             log.warn("Tentativa de cadastro de voo duplicado. numeroVoo={}", numeroVoo);
 
