@@ -1,6 +1,7 @@
 package com.c4mila.travelhub_api.voo.application.service;
 
 import com.c4mila.travelhub_api.voo.domain.repository.specification.VooSpecification;
+import com.c4mila.travelhub_api.voo.infrastructure.dto.AtualizarVooRequest;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooRequest;
 import com.c4mila.travelhub_api.voo.domain.model.Voo;
 import com.c4mila.travelhub_api.voo.domain.repository.VooRepository;
@@ -116,5 +117,41 @@ public class VooService {
         log.info("Filtragem de voos concluída -> {} voos", voos.size());
 
         return voos;
+    }
+
+    @Transactional
+    public VooResponse atualizarVoo(Long id, AtualizarVooRequest request) {
+        Voo voo = vooRepository.findById(id).orElseThrow(
+                () -> {
+                    log.warn("Tentativa de atualizar coo inexistente -> id={}", id);
+                    return new VooNaoEncontradoException(
+                            "Voo não encontrado."
+                    );
+                });
+
+        if (request.companhia() != null){
+            voo.setCompanhia(request.companhia().trim());
+        }
+        if (request.origem() != null){
+            voo.setOrigem(request.origem().trim());
+        }
+        if (request.destino() != null){
+            voo.setDestino(request.destino().trim());
+        }
+        if (request.dataHora() != null){
+            voo.setDataHora(request.dataHora());
+        }
+        if (request.preco() != null){
+            voo.setPreco(request.preco());
+        }
+
+        Voo vooAtualizado = vooRepository.save(voo);
+        log.info(
+                "Voo atualizado com sucesso -> id={}, numeroVoo={}",
+                vooAtualizado.getId(),
+                vooAtualizado.getNumeroVoo()
+        );
+
+        return VooResponse.from(vooAtualizado);
     }
 }
