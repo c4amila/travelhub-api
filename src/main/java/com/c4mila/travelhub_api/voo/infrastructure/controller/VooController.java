@@ -39,7 +39,18 @@ public class VooController {
 
     @GetMapping
     public ResponseEntity<List<VooResponse>> listar(){
-        List<VooResponse> vooResponses = vooService.listarVoos();
-        return ResponseEntity.ok(vooResponses);
+        List<VooResponse> vooResponse = vooService.listarVoos();
+        return ResponseEntity.ok(vooResponse);
+    }
+
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<VooResponse>> filtrar(
+            @RequestParam(required = false) String origem,
+            @RequestParam(required = false) String destino,
+            @RequestParam(required = false) String companhia
+    ){
+        List<VooResponse> vooResponse = vooService.filtrarVoos(origem, destino, companhia);
+
+        return ResponseEntity.ok(vooResponse);
     }
 }
