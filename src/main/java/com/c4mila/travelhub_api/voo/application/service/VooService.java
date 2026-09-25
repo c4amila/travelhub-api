@@ -1,5 +1,6 @@
 package com.c4mila.travelhub_api.voo.application.service;
 
+import com.c4mila.travelhub_api.voo.domain.repository.specification.VooSpecification;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooRequest;
 import com.c4mila.travelhub_api.voo.domain.model.Voo;
 import com.c4mila.travelhub_api.voo.domain.repository.VooRepository;
@@ -7,6 +8,7 @@ import com.c4mila.travelhub_api.voo.infrastructure.dto.VooResponse;
 import com.c4mila.travelhub_api.voo.infrastructure.exception.VooJaCadastradoException;
 import com.c4mila.travelhub_api.voo.infrastructure.exception.VooNaoEncontradoException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,6 +75,34 @@ public class VooService {
     @Transactional(readOnly = true)
     public List<VooResponse> listarVoos(){
         return vooRepository.findAll()
+                .stream()
+                .map(VooResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<VooResponse> filtrarVoos(String origem, String destino, String companhia){
+
+        Specification<Voo> specification = (root, query, criteriaBuilder)
+                                            -> criteriaBuilder.conjunction();
+
+        if (origem != null && !origem.isBlank()){
+            specification = specification.and(
+                    VooSpecification.origemIgualA(origem.trim())
+            );
+        }
+        if (destino != null && !destino.isBlank()){
+            specification = specification.and(
+                    VooSpecification.destinoIgualA(destino.trim())
+            );
+        }
+        if (companhia != null && !companhia.isBlank()){
+            specification = specification.and(
+                    VooSpecification.companhiaIgualA(companhia.trim())
+            );
+        }
+
+        return vooRepository.findAll(specification)
                 .stream()
                 .map(VooResponse::from)
                 .toList();
