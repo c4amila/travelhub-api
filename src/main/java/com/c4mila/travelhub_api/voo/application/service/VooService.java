@@ -87,6 +87,8 @@ public class VooService {
     @Transactional(readOnly = true)
     public List<VooResponse> filtrarVoos(String origem, String destino, String companhia){
 
+        log.info("Filtrando voos -> origem={}, destino={}, companhia={}", origem, destino, companhia);
+
         Specification<Voo> specification = (root, query, criteriaBuilder)
                                             -> criteriaBuilder.conjunction();
 
@@ -106,9 +108,13 @@ public class VooService {
             );
         }
 
-        return vooRepository.findAll(specification)
+        List<VooResponse> voos = vooRepository.findAll(specification)
                 .stream()
                 .map(VooResponse::from)
                 .toList();
+
+        log.info("Filtragem de voos concluída -> {} voos", voos.size());
+
+        return voos;
     }
 }
