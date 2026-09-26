@@ -1,10 +1,11 @@
 package com.c4mila.travelhub_api.voo.infrastructure.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+@Builder
 public record VooRequest (
 
         @NotBlank @Size(max = 20) String numeroVoo,
