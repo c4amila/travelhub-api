@@ -40,6 +40,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(VooCanceladoException.class)
+    public ResponseEntity<Object> tratarVooCancelado(VooCanceladoException e, WebRequest request){
+        return criarRespostaErro(
+                e,
+                "VOO_NAO_PODE_SER_CANCELADO",
+                e.getMessage(),
+                List.of(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException e,
