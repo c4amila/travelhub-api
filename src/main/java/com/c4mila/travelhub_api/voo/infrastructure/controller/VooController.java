@@ -32,7 +32,7 @@ public class VooController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VooResponse> buscar(@PathVariable("id") Long id){
+    public ResponseEntity<VooResponse> buscar(@PathVariable Long id){
         VooResponse response = vooService.buscarVoo(id);
 
         return ResponseEntity.ok(response);
@@ -61,5 +61,11 @@ public class VooController {
         VooResponse vooResponse = vooService.atualizarVoo(id, request);
         return ResponseEntity.ok(vooResponse);
 
+    }
+
+    @PatchMapping("/cancelar/{id}")
+    public ResponseEntity<VooResponse> cancelar(@PathVariable Long id){
+        VooResponse vooResponse = vooService.cancelarVoo(id);
+        return ResponseEntity.ok(vooResponse);
     }
 }
