@@ -82,4 +82,54 @@ public class VooServiceTest {
         assertEquals("Já existe um voo cadastrado com este número.", ex.getMessage());
         verify(vooRepository, never()).save(any(Voo.class));
     }
+
+    @Test
+    @DisplayName("Deve buscar voo corretamente")
+    void deveBuscarVooCorretamente(){
+        Long id = 1L;
+
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+
+        voo.setId(id);
+        when(vooRepository.findById(id)).thenReturn(Optional.of(voo));
+
+        VooResponse response = vooService.buscarVoo(id);
+
+        assertNotNull(response);
+
+        assertEquals(id, response.id());
+        assertEquals("LA1234", response.numeroVoo());
+        assertEquals("AZUL", response.companhia());
+        assertEquals("Belo Horizonte", response.origem());
+        assertEquals("São Paulo", response.destino());
+        assertEquals(new BigDecimal("500.00"), response.preco());
+        assertEquals(180, response.assentosTotais());
+        assertEquals(180, response.assentosDisponiveis());
+        assertEquals(StatusVoo.ATIVO, response.status());
+
+        verify(vooRepository).findById(id);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção quando o voo não for encontrado")
+    void lancarExcecaoQuandoVooNaoForEncontrado(){
+        Long id = 99L;
+
+        when(vooRepository.findById(id)).thenReturn(Optional.empty());
+
+        VooNaoEncontradoException ex = assertThrows(VooNaoEncontradoException.class,
+                () -> vooService.buscarVoo(id));
+
+        assertEquals("Voo não encontrado.", ex.getMessage());
+        verify(vooRepository).findById(id);
+        verify(vooRepository, never()).save(any(Voo.class));
+    }
 }
