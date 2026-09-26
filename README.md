@@ -21,11 +21,12 @@ O projeto simula um sistema real de agência de turismo, com regras de negócio 
 Em breve
 
 ## Principais Endpoints
-| **Método** | **Endpoint** | **Descrição**        |
-|------------|--------------|----------------------|
-| POST       | `/voos`      | Cadastra um voo novo | 
-| GET        | `/voos/{id}` | Busca voo por id     |
-| GET        | `/voos`      | Listar todos os voos |
-| GET        | `/voos/filtrar`| Filtrar voos       |
- | PATCH     | `/voos/{id}` | Atualizar voo        |
-| PATH       | `/voos/cancelar/{id}` | Cancelar voo |
+| **Método** | **Endpoint**                 | **Descrição**               |
+|------------|------------------------------|-----------------------------|
+| POST       | `/voos`                      | Cadastra um voo novo        | 
+| GET        | `/voos/{id}`                 | Busca voo por id            |
+| GET        | `/voos`                      | Listar todos os voos        |
+| GET        | `/voos/filtrar`              | Filtrar voos                |
+ | PATCH     | `/voos/{id}`                 | Atualizar voo               |
+| PATH       | `/voos/cancelar/{numeroVoo}` | Cancelar pelo número do voo |
+| DELETE     | `/voos/{id}`                 | Excluir voo pelo id         |
