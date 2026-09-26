@@ -3,6 +3,7 @@ package com.c4mila.travelhub_api.voo.infrastructure.controller;
 import com.c4mila.travelhub_api.voo.application.service.VooService;
 import com.c4mila.travelhub_api.voo.domain.model.Voo;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.AtualizarVooRequest;
+import com.c4mila.travelhub_api.voo.infrastructure.dto.ExclusaoVooResponse;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooRequest;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooResponse;
 import jakarta.validation.Valid;
@@ -67,5 +68,11 @@ public class VooController {
     public ResponseEntity<VooResponse> cancelar(@PathVariable String numeroVoo){
         VooResponse vooResponse = vooService.cancelarVoo(numeroVoo);
         return ResponseEntity.ok(vooResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ExclusaoVooResponse> excluir(@PathVariable Long id){
+        vooService.excluirVoo(id);
+        return ResponseEntity.ok(new ExclusaoVooResponse("Voo excluído com sucesso!"));
     }
 }
