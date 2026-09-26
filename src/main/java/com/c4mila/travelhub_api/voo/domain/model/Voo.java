@@ -4,6 +4,7 @@ import com.c4mila.travelhub_api.shared.persistence.AuditableEntity;
 import com.c4mila.travelhub_api.voo.domain.enums.StatusVoo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -74,6 +75,7 @@ public class Voo extends AuditableEntity {
         this.preco = preco;
         this.assentosTotais = assentosTotais;
         this.assentosDisponiveis = assentosTotais;
+        this.status = StatusVoo.ATIVO;
     }
 
     @PrePersist
