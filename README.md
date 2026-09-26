@@ -28,3 +28,4 @@ Em breve
 | GET        | `/voos`      | Listar todos os voos |
 | GET        | `/voos/filtrar`| Filtrar voos       |
  | PATCH     | `/voos/{id}` | Atualizar voo        |
+| PATH       | `/voos/cancelar/{id}` | Cancelar voo |
