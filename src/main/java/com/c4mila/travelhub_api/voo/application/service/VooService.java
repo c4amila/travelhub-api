@@ -192,7 +192,16 @@ public class VooService {
     }
 
     @Transactional
-    public VooResponse excluirVoo(Long id){
+    public void excluirVoo(Long id){
+        Voo voo = vooRepository.findById(id).orElseThrow(
+                () -> {
+                    log.warn("Tentativa de excluir voo inexistente -> id={}", id);
+                    return new VooNaoEncontradoException(
+                            "Voo não encontrado."
+                    );
+                });
 
+        vooRepository.delete(voo);
+        log.info("Voo excluido com sucesso -> id={}", id);
     }
 }
