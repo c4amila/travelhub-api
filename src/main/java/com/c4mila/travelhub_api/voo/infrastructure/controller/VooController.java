@@ -63,9 +63,9 @@ public class VooController {
 
     }
 
-    @PatchMapping("/cancelar/{id}")
-    public ResponseEntity<VooResponse> cancelar(@PathVariable Long id){
-        VooResponse vooResponse = vooService.cancelarVoo(id);
+    @PatchMapping("/cancelar/{numeroVoo}")
+    public ResponseEntity<VooResponse> cancelar(@PathVariable String numeroVoo){
+        VooResponse vooResponse = vooService.cancelarVoo(numeroVoo);
         return ResponseEntity.ok(vooResponse);
     }
 }

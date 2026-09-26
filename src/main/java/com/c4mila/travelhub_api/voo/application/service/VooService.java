@@ -159,23 +159,23 @@ public class VooService {
     }
 
     @Transactional
-    public VooResponse cancelarVoo(Long id){
-        Voo voo = vooRepository.findById(id).orElseThrow(
+    public VooResponse cancelarVoo(String numeroVoo){
+        Voo voo = vooRepository.findByNumeroVoo(numeroVoo.trim().toUpperCase()).orElseThrow(
                 () -> {
-                    log.warn("Tentativa de cancelamento de voo inexistente -> id={}", id);
+                    log.warn("Tentativa de cancelamento de voo inexistente -> numeroVoo={}", numeroVoo);
                     return new VooNaoEncontradoException(
                             "Voo não encontrado."
                     );
                 });
         if (voo.getStatus() == StatusVoo.CANCELADO){
-            log.warn("Tentative de cancelar um voo já cancelado -> id={}", id);
+            log.warn("Tentative de cancelar um voo já cancelado -> numeroVoo={}", numeroVoo);
 
             throw new VooCanceladoException(
                     "Voo já está cancelado."
             );
         }
         if (!voo.getDataHora().isAfter(LocalDateTime.now())){
-            log.warn("Tentativa de cancelar voo com data antiga -> id={}", id);
+            log.warn("Tentativa de cancelar voo com data antiga -> numeroVoo={}", numeroVoo);
 
             throw new VooCanceladoException(
                     "Não é possível cancelar um voo data antiga."
@@ -188,6 +188,11 @@ public class VooService {
         log.info("Voo cancelado com sucesso! numeroVoo={}", vooCancelado.getNumeroVoo());
 
         return VooResponse.from(vooCancelado);
+
+    }
+
+    @Transactional
+    public VooResponse excluirVoo(Long id){
 
     }
 }
