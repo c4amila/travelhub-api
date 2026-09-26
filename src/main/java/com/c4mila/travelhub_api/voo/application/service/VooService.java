@@ -1,11 +1,13 @@
 package com.c4mila.travelhub_api.voo.application.service;
 
+import com.c4mila.travelhub_api.voo.domain.enums.StatusVoo;
 import com.c4mila.travelhub_api.voo.domain.repository.specification.VooSpecification;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.AtualizarVooRequest;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooRequest;
 import com.c4mila.travelhub_api.voo.domain.model.Voo;
 import com.c4mila.travelhub_api.voo.domain.repository.VooRepository;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooResponse;
+import com.c4mila.travelhub_api.voo.infrastructure.exception.VooCanceladoException;
 import com.c4mila.travelhub_api.voo.infrastructure.exception.VooJaCadastradoException;
 import com.c4mila.travelhub_api.voo.infrastructure.exception.VooNaoEncontradoException;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -153,5 +156,38 @@ public class VooService {
         );
 
         return VooResponse.from(vooAtualizado);
+    }
+
+    @Transactional
+    public VooResponse cancelarVoo(Long id){
+        Voo voo = vooRepository.findById(id).orElseThrow(
+                () -> {
+                    log.warn("Tentativa de cancelamento de voo inexistente -> id={}", id);
+                    return new VooNaoEncontradoException(
+                            "Voo não encontrado."
+                    );
+                });
+        if (voo.getStatus() == StatusVoo.CANCELADO){
+            log.warn("Tentative de cancelar um voo já cancelado -> id={}", id);
+
+            throw new VooCanceladoException(
+                    "Voo já está cancelado."
+            );
+        }
+        if (!voo.getDataHora().isAfter(LocalDateTime.now())){
+            log.warn("Tentativa de cancelar voo com data antiga -> id={}", id);
+
+            throw new VooCanceladoException(
+                    "Não é possível cancelar um voo data antiga."
+            );
+        }
+
+        voo.setStatus(StatusVoo.CANCELADO);
+        Voo vooCancelado = vooRepository.save(voo);
+
+        log.info("Voo cancelado com sucesso! numeroVoo={}", vooCancelado.getNumeroVoo());
+
+        return VooResponse.from(vooCancelado);
+
     }
 }
