@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -190,5 +191,133 @@ public class VooServiceTest {
         assertTrue(response.isEmpty());
 
         verify(vooRepository).findAll();
+    }
+
+    @Test
+    @DisplayName("Deve filtrar voos corretamente")
+    void filtrarVoosCorretamente(){
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+
+        when(vooRepository.findAll(any(Specification.class))).thenReturn(List.of(voo));
+
+        List<VooResponse> response = vooService.filtrarVoos(
+                "Belo Horizonte",
+                "São Paulo",
+                "AZUL"
+        );
+
+        assertNotNull(response);
+        assertEquals(1, response.size());
+
+        assertEquals("LA1234", response.get(0).numeroVoo());
+        assertEquals("Belo Horizonte", response.get(0).origem());
+        assertEquals("São Paulo", response.get(0).destino());
+
+        verify(vooRepository).findAll(any(Specification.class));
+    }
+
+    @Test
+    @DisplayName("Deve retornar lista vazia quando nenhum voo corresponder ao filtro")
+    void retornarListaVaziaQuandoVooNaoCorresponderAoFiltro(){
+        when(vooRepository.findAll(any(Specification.class))).thenReturn(List.of());
+
+        List<VooResponse> response = vooService.filtrarVoos(
+                "Curitiba",
+                "Rio de Janeiro",
+                "LATAM"
+        );
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+
+        verify(vooRepository).findAll(any(Specification.class));
+    }
+
+    @Test
+    @DisplayName("Deve filtrar voos somente pela origem")
+    void filtrarVoosPelaOrigem(){
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+
+        when(vooRepository.findAll(any(Specification.class))).thenReturn(List.of(voo));
+
+        List<VooResponse> response = vooService.filtrarVoos(
+                "Belo Horizonte",
+                null,
+                null
+        );
+
+        assertEquals(1, response.size());
+        assertEquals("Belo Horizonte", response.get(0).origem());
+
+        verify(vooRepository).findAll(any(Specification.class));
+    }
+
+    @Test
+    @DisplayName("Deve filtrar voos somente pelo destino")
+    void filtrarVoosPeloDestino(){
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+
+        when(vooRepository.findAll(any(Specification.class))).thenReturn(List.of(voo));
+
+        List<VooResponse> response = vooService.filtrarVoos(
+                null,
+                "São Paulo",
+                null
+        );
+
+        assertEquals(1, response.size());
+        assertEquals("São Paulo", response.get(0).destino());
+
+        verify(vooRepository).findAll(any(Specification.class));
+    }
+
+    @Test
+    @DisplayName("Deve filtrar voos somente pela companhia")
+    void filtrarVoosPelaCompanhia(){
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+
+        when(vooRepository.findAll(any(Specification.class))).thenReturn(List.of(voo));
+
+        List<VooResponse> response = vooService.filtrarVoos(
+                null,
+                null,
+                "AZUL"
+        );
+
+        assertEquals(1, response.size());
+        assertEquals("AZUL", response.get(0).companhia());
+
+        verify(vooRepository).findAll(any(Specification.class));
     }
 }
