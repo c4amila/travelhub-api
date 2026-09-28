@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -131,5 +132,63 @@ public class VooServiceTest {
         assertEquals("Voo não encontrado.", ex.getMessage());
         verify(vooRepository).findById(id);
         verify(vooRepository, never()).save(any(Voo.class));
+    }
+
+    @Test
+    @DisplayName("Deve listar todos os voos corretamente")
+    void deveListarTodosOsVoosExistentes(){
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+        Voo voo2 = new Voo(
+                "GO6543",
+                "GOL",
+                "Brasília",
+                "São Paulo",
+                LocalDateTime.now().plusDays(10),
+                new BigDecimal("800.00"),
+                180
+        );
+        when(vooRepository.findAll()).thenReturn(List.of(voo, voo2));
+
+        List<VooResponse> response = vooService.listarVoos();
+
+        assertNotNull(response);
+
+        assertEquals(2, response.size());
+
+        assertEquals("LA1234", response.get(0).numeroVoo());
+        assertEquals("AZUL", response.get(0).companhia());
+        assertEquals("Belo Horizonte", response.get(0).origem());
+        assertEquals("São Paulo", response.get(0).destino());
+        assertEquals(new BigDecimal("500.00"), response.get(0).preco());
+
+        assertEquals("GO6543", response.get(1).numeroVoo());
+        assertEquals("GOL", response.get(1).companhia());
+        assertEquals("Brasília", response.get(1).origem());
+        assertEquals("São Paulo", response.get(1).destino());
+        assertEquals(new BigDecimal("800.00"), response.get(1).preco());
+
+        verify(vooRepository).findAll();
+        verify(vooRepository,never()).save(any(Voo.class));
+    }
+
+    @Test
+    @DisplayName("Deve retornar lista vazia quando não existirem voos")
+    void retornarListaVaziaAoNaoExistirVoos(){
+        when(vooRepository.findAll()).thenReturn(List.of());
+
+        List<VooResponse> response = vooService.listarVoos();
+
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+
+        verify(vooRepository).findAll();
     }
 }
