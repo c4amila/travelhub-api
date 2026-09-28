@@ -520,4 +520,44 @@ public class VooServiceTest {
 
         verify(vooRepository, never()).save(any(Voo.class));
     }
+
+    @Test
+    @DisplayName("Deve excluir voo corretamente")
+    void deveExcluirVooCorretamente(){
+        Long id = 1L;
+
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+
+        when(vooRepository.findById(id)).thenReturn(Optional.of(voo));
+
+        vooService.excluirVoo(id);
+
+        verify(vooRepository).findById(id);
+        verify(vooRepository).delete(voo);
+    }
+
+    @Test
+    @DisplayName("Lançar exceção ao excluir voo inexistente")
+    void lancarExcecaoaoExcluirVooInexistente(){
+        Long id = 99L;
+
+        when(vooRepository.findById(id)).thenReturn(Optional.empty());
+
+        VooNaoEncontradoException ex = assertThrows(
+                VooNaoEncontradoException.class,
+                () -> vooService.excluirVoo(id)
+        );
+
+        verify(vooRepository).findById(id);
+        verify(vooRepository, never()).delete(any(Voo.class));
+    }
+
 }
