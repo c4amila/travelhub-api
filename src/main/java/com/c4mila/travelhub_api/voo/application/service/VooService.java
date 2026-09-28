@@ -178,7 +178,7 @@ public class VooService {
             log.warn("Tentativa de cancelar voo com data antiga -> numeroVoo={}", numeroVoo);
 
             throw new VooCanceladoException(
-                    "Não é possível cancelar um voo data antiga."
+                    "Não é possível cancelar um voo com a data antiga."
             );
         }
 

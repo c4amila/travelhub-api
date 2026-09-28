@@ -6,6 +6,7 @@ import com.c4mila.travelhub_api.voo.domain.repository.VooRepository;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.AtualizarVooRequest;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooRequest;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooResponse;
+import com.c4mila.travelhub_api.voo.infrastructure.exception.VooCanceladoException;
 import com.c4mila.travelhub_api.voo.infrastructure.exception.VooJaCadastradoException;
 import com.c4mila.travelhub_api.voo.infrastructure.exception.VooNaoEncontradoException;
 import org.junit.jupiter.api.BeforeEach;
@@ -420,6 +421,103 @@ public class VooServiceTest {
         assertEquals("Voo não encontrado.", ex.getMessage());
 
         verify(vooRepository).findById(id);
+        verify(vooRepository, never()).save(any(Voo.class));
+    }
+
+    @Test
+    @DisplayName("Deve cancelar um voo válido corretamente")
+    void cancelarVooCorretamente(){
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+
+        when(vooRepository.findByNumeroVoo("LA1234")).thenReturn(Optional.of(voo));
+
+        when(vooRepository.save(any(Voo.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        VooResponse response = vooService.cancelarVoo("LA1234");
+
+        assertNotNull(response);
+
+        assertEquals(StatusVoo.CANCELADO, response.status());
+        assertEquals(StatusVoo.CANCELADO, voo.getStatus());
+
+        verify(vooRepository).findByNumeroVoo("LA1234");
+        verify(vooRepository).save(voo);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao tentar canelar um voo inexistente")
+    void lancarExcecaoAoCancelarVooInexistente(){
+        when(vooRepository.findByNumeroVoo("LA1111")).thenReturn(Optional.empty());
+
+        VooNaoEncontradoException ex = assertThrows(
+                VooNaoEncontradoException.class,
+                () -> vooService.cancelarVoo("LA1111")
+        );
+
+        assertEquals("Voo não encontrado.", ex.getMessage());
+
+        verify(vooRepository).findByNumeroVoo("LA1111");
+        verify(vooRepository, never()).save(any(Voo.class));
+    }
+
+    @Test
+    @DisplayName("Lançar exceção ao cancelar um voo já cancelado")
+    void lancarExcecaoAoCancelarVooJaCancelado(){
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+        voo.setStatus(StatusVoo.CANCELADO);
+
+        when(vooRepository.findByNumeroVoo("LA1234")).thenReturn(Optional.of(voo));
+
+        VooCanceladoException ex = assertThrows(
+                VooCanceladoException.class,
+                () -> vooService.cancelarVoo("LA1234")
+        );
+
+        assertEquals("Voo já está cancelado.", ex.getMessage());
+        assertEquals(StatusVoo.CANCELADO, voo.getStatus());
+
+        verify(vooRepository).findByNumeroVoo("LA1234");
+        verify(vooRepository, never()).save(any(Voo.class));
+    }
+
+    @Test
+    @DisplayName("Lançar exceção ao cancelar voo com uma data que já passou")
+    void lancarExcecaoAoCancelarVooComDataAntiga(){
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().minusDays(1),
+                new BigDecimal("500.00"),
+                180
+        );
+
+        when(vooRepository.findByNumeroVoo("LA1234")).thenReturn(Optional.of(voo));
+
+        VooCanceladoException ex = assertThrows(
+                VooCanceladoException.class,
+                () -> vooService.cancelarVoo("LA1234")
+        );
+
+        assertEquals("Não é possível cancelar um voo com a data antiga.", ex.getMessage());
+
         verify(vooRepository, never()).save(any(Voo.class));
     }
 }
