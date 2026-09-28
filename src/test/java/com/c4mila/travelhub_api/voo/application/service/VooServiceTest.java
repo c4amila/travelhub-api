@@ -3,6 +3,7 @@ package com.c4mila.travelhub_api.voo.application.service;
 import com.c4mila.travelhub_api.voo.domain.enums.StatusVoo;
 import com.c4mila.travelhub_api.voo.domain.model.Voo;
 import com.c4mila.travelhub_api.voo.domain.repository.VooRepository;
+import com.c4mila.travelhub_api.voo.infrastructure.dto.AtualizarVooRequest;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooRequest;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooResponse;
 import com.c4mila.travelhub_api.voo.infrastructure.exception.VooJaCadastradoException;
@@ -319,5 +320,106 @@ public class VooServiceTest {
         assertEquals("AZUL", response.get(0).companhia());
 
         verify(vooRepository).findAll(any(Specification.class));
+    }
+
+    @Test
+    @DisplayName("Deve atualizar múltiplos campos do voo")
+    void atualizarMultiplosCamposDoVoo(){
+        Long id = 1L;
+
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+
+        LocalDateTime novaData = LocalDateTime.now().plusDays(15);
+
+        AtualizarVooRequest atualizarVooRequest = AtualizarVooRequest.builder()
+                .origem("Recife")
+                .destino("Curitiba")
+                .dataHora(novaData)
+                .preco(new BigDecimal("970.00"))
+                .build();
+
+        when(vooRepository.findById(id)).thenReturn(Optional.of(voo));
+
+        when(vooRepository.save(any(Voo.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        VooResponse response = vooService.atualizarVoo(id, atualizarVooRequest);
+
+        assertEquals("Recife", response.origem());
+        assertEquals("Curitiba", response.destino());
+        assertEquals(novaData, response.dataHora());
+        assertEquals(new BigDecimal("970.00"), response.preco());
+
+        assertEquals("AZUL", response.companhia());
+
+        verify(vooRepository).save(voo);
+    }
+
+    @Test
+    @DisplayName("Deve atualizar o preço do voo")
+    void atualizarPrecoDoVoo(){
+        Long id = 1L;
+
+        Voo voo = new Voo(
+                "LA1234",
+                "AZUL",
+                "Belo Horizonte",
+                "São Paulo",
+                LocalDateTime.now().plusDays(5),
+                new BigDecimal("500.00"),
+                180
+        );
+
+        AtualizarVooRequest atualizarVooRequest = AtualizarVooRequest.builder()
+                .preco(new BigDecimal("970.00"))
+                .build();
+
+        when(vooRepository.findById(id)).thenReturn(Optional.of(voo));
+
+        when(vooRepository.save(any(Voo.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+
+        VooResponse response = vooService.atualizarVoo(id, atualizarVooRequest);
+
+        assertNotNull(response);
+
+        assertEquals(new BigDecimal("970.00"), response.preco());
+
+        assertEquals("AZUL", response.companhia());
+        assertEquals("Belo Horizonte", response.origem());
+        assertEquals("São Paulo", response.destino());
+
+        verify(vooRepository).findById(id);
+        verify(vooRepository).save(voo);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao atualiza um voo inexistente")
+    void lancarExcecaoAoAtualizarVooInexistente(){
+        Long id = 99L;
+
+        AtualizarVooRequest atualizarVooRequest = AtualizarVooRequest.builder()
+                .preco(new BigDecimal("970.00"))
+                .build();
+
+        when(vooRepository.findById(id)).thenReturn(Optional.empty());
+
+        VooNaoEncontradoException ex = assertThrows(
+                VooNaoEncontradoException.class,
+                () -> vooService.atualizarVoo(id, atualizarVooRequest)
+        );
+
+        assertEquals("Voo não encontrado.", ex.getMessage());
+
+        verify(vooRepository).findById(id);
+        verify(vooRepository, never()).save(any(Voo.class));
     }
 }

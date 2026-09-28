@@ -126,7 +126,7 @@ public class VooService {
     public VooResponse atualizarVoo(Long id, AtualizarVooRequest request) {
         Voo voo = vooRepository.findById(id).orElseThrow(
                 () -> {
-                    log.warn("Tentativa de atualizar coo inexistente -> id={}", id);
+                    log.warn("Tentativa de atualizar voo inexistente -> id={}", id);
                     return new VooNaoEncontradoException(
                             "Voo não encontrado."
                     );
