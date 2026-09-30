@@ -1,4 +1,4 @@
-package com.c4mila.travelhub_api.shared.persistence.exception;
+package com.c4mila.travelhub_api.shared.exception;
 
 import com.c4mila.travelhub_api.passagem.infrastructure.exception.AssentoIndisponivelException;
 import com.c4mila.travelhub_api.passagem.infrastructure.exception.VooIndisponivelException;
