@@ -1,7 +1,6 @@
 package com.c4mila.travelhub_api.voo.infrastructure.controller;
 
 import com.c4mila.travelhub_api.voo.application.service.VooService;
-import com.c4mila.travelhub_api.voo.domain.model.Voo;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.AtualizarVooRequest;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.ExclusaoVooResponse;
 import com.c4mila.travelhub_api.voo.infrastructure.dto.VooRequest;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
-import static com.c4mila.travelhub_api.voo.infrastructure.controller.RestConstants.PATH_VOOS;
+import static com.c4mila.travelhub_api.shared.web.RestConstants.PATH_VOOS;
 
 @RestController
 @RequestMapping(PATH_VOOS)
