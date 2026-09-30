@@ -18,7 +18,7 @@ public class Passagem extends AuditableEntity {
 
     @ManyToOne
     @JoinColumn(name = "voo_id", nullable = false)
-    private Voo voo;
+    private Voo vooId;
 
     @Column(name = "data_compra", nullable = false)
     private LocalDateTime dataCompra;
@@ -28,9 +28,9 @@ public class Passagem extends AuditableEntity {
 
     protected Passagem(){}
 
-    public Passagem(Voo voo, BigDecimal valorPago) {
-        this.voo = voo;
+    public Passagem(Voo vooId, BigDecimal valorPago) {
+        this.vooId = vooId;
         this.dataCompra = LocalDateTime.now();
-        this.valorPago = voo.getPreco();
+        this.valorPago = vooId.getPreco();
     }
 }
