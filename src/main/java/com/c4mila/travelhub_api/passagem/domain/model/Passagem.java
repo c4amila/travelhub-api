@@ -28,7 +28,7 @@ public class Passagem extends AuditableEntity {
 
     protected Passagem(){}
 
-    public Passagem(Voo vooId, BigDecimal valorPago) {
+    public Passagem(Voo vooId) {
         this.vooId = vooId;
         this.dataCompra = LocalDateTime.now();
         this.valorPago = vooId.getPreco();
