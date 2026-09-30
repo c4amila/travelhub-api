@@ -37,7 +37,7 @@ public class PassagemService {
                     );
                 });
 
-        if (voo.getStatus() == StatusVoo.ATIVO){
+        if (voo.getStatus() == StatusVoo.CANCELADO){
             log.warn("Tentativa de comprar passagem para um voo cancelado -> numeroVoo={}", numeroVoo);
             throw new VooIndisponivelException(
                     "Não é possível realizar a compra da passagem para um voo não ativo."
