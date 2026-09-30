@@ -1,5 +1,8 @@
-package com.c4mila.travelhub_api.voo.infrastructure.exception;
+package com.c4mila.travelhub_api.shared.persistence.exception;
 
+import com.c4mila.travelhub_api.passagem.infrastructure.exception.AssentoIndisponivelException;
+import com.c4mila.travelhub_api.passagem.infrastructure.exception.VooIndisponivelException;
+import com.c4mila.travelhub_api.voo.infrastructure.exception.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -45,6 +48,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return criarRespostaErro(
                 e,
                 "VOO_NAO_PODE_SER_CANCELADO",
+                e.getMessage(),
+                List.of(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
+    @ExceptionHandler(VooIndisponivelException.class)
+    public ResponseEntity<Object> tratarVooIndisponivel(VooIndisponivelException e, WebRequest request){
+        return criarRespostaErro(
+                e,
+                "VOO_INDISPONIVEL",
+                e.getMessage(),
+                List.of(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
+    @ExceptionHandler(AssentoIndisponivelException.class)
+    public ResponseEntity<Object> tratarAssentoIndisponivel(AssentoIndisponivelException e, WebRequest request){
+        return criarRespostaErro(
+                e,
+                "ASSENTO_INDISPONIVEL",
                 e.getMessage(),
                 List.of(),
                 HttpStatus.CONFLICT,
