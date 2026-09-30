@@ -21,6 +21,7 @@ O projeto simula um sistema real de agência de turismo, com regras de negócio 
 Em breve
 
 ## Principais Endpoints
+### Voo
 | **Método** | **Endpoint**                 | **Descrição**               |
 |------------|------------------------------|-----------------------------|
 | POST       | `/voos`                      | Cadastra um voo novo        | 
@@ -30,3 +31,8 @@ Em breve
  | PATCH     | `/voos/{id}`                 | Atualizar voo               |
 | PATH       | `/voos/cancelar/{numeroVoo}` | Cancelar pelo número do voo |
 | DELETE     | `/voos/{id}`                 | Excluir voo pelo id         |
+---
+### Passagem
+| **Método** | **Endpoint**                 | **Descrição**               |
+|------------|------------------------------|-----------------------------|
+| POST       | `passagens/comprar`          | Compra uma passagem         |
