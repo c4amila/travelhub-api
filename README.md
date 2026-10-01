@@ -36,4 +36,5 @@ Em breve
 | **Método** | **Endpoint**         | **Descrição**               |
 |------------|----------------------|-----------------------------|
 | POST       | `/passagens/comprar` | Compra uma passagem         |
-| GET        | `/passagens/{id}`    | Buscar passagem por id      |                   
+| GET        | `/passagens/{id}`    | Buscar passagem por id      |
+|  GET       |  `/passagens`        | Listar todas as passagens   |
