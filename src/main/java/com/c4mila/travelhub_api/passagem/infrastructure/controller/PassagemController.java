@@ -5,10 +5,7 @@ import com.c4mila.travelhub_api.passagem.infrastructure.dto.PassagemRequest;
 import com.c4mila.travelhub_api.passagem.infrastructure.dto.PassagemResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -28,5 +25,11 @@ public class PassagemController {
         PassagemResponse response = passagemService.comprarPassagem(request);
         return ResponseEntity.created(URI.create(PATH_PASSAGENS + "/" + response.id()))
                 .body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PassagemResponse> buscar(@PathVariable Long id){
+        PassagemResponse response = passagemService.buscarPassagem(id);
+        return ResponseEntity.ok(response);
     }
 }
