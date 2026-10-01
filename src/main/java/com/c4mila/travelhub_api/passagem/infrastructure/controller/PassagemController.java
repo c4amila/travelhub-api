@@ -39,4 +39,10 @@ public class PassagemController {
         List<PassagemResponse> response = passagemService.listarPassagens();
         return ResponseEntity.ok(response);
     }
+
+    @PatchMapping("/cancelar/{id}")
+    public ResponseEntity<PassagemResponse> cancelar(@PathVariable Long id){
+        PassagemResponse response = passagemService.cancelarPassagem(id);
+        return ResponseEntity.ok(response);
+    }
 }
