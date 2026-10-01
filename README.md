@@ -33,6 +33,7 @@ Em breve
 | DELETE     | `/voos/{id}`                 | Excluir voo pelo id         |
 ---
 ### Passagem
-| **Método** | **Endpoint**                 | **Descrição**               |
-|------------|------------------------------|-----------------------------|
-| POST       | `passagens/comprar`          | Compra uma passagem         |
+| **Método** | **Endpoint**         | **Descrição**               |
+|------------|----------------------|-----------------------------|
+| POST       | `/passagens/comprar` | Compra uma passagem         |
+| GET        | `/passagens/{id}`    | Buscar passagem por id      |                   
