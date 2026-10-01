@@ -1,6 +1,7 @@
 package com.c4mila.travelhub_api.shared.exception;
 
 import com.c4mila.travelhub_api.passagem.infrastructure.exception.AssentoIndisponivelException;
+import com.c4mila.travelhub_api.passagem.infrastructure.exception.PassagemCanceladaException;
 import com.c4mila.travelhub_api.passagem.infrastructure.exception.PassagemNaoEncontradaException;
 import com.c4mila.travelhub_api.passagem.infrastructure.exception.VooIndisponivelException;
 import com.c4mila.travelhub_api.voo.infrastructure.exception.*;
@@ -88,6 +89,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 e.getMessage(),
                 List.of(),
                 HttpStatus.NOT_FOUND,
+                request
+        );
+    }
+
+    @ExceptionHandler(PassagemCanceladaException.class)
+    public ResponseEntity<Object> tratarPassagemCancelada(PassagemCanceladaException e, WebRequest request){
+        return criarRespostaErro(
+                e,
+                "PASSAGEM_CANCELADA",
+                e.getMessage(),
+                List.of(),
+                HttpStatus.CONFLICT,
                 request
         );
     }
