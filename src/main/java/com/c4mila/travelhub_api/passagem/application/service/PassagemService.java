@@ -14,6 +14,7 @@ import com.c4mila.travelhub_api.voo.infrastructure.exception.VooNaoEncontradoExc
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -73,5 +74,16 @@ public class PassagemService {
         log.info("Passagem encontrada -> id={}", id);
 
         return PassagemResponse.from(passagem);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PassagemResponse> listarPassagens(){
+        List<PassagemResponse> passagens = passagemRepository.findAll()
+                .stream()
+                .map(PassagemResponse::from)
+                .toList();
+
+        log.info("Listagem de passagens concluída -> {} passagens", passagens.size());
+        return passagens;
     }
 }
