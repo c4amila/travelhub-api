@@ -1,4 +1,4 @@
-package com.c4mila.travelhub_api.voo.infrastructure.exception;
+package com.c4mila.travelhub_api.shared.exception;
 
 import lombok.Builder;
 import lombok.Data;
