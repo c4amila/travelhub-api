@@ -1,15 +1,18 @@
 package com.c4mila.travelhub_api.passagem.domain.model;
 
+import com.c4mila.travelhub_api.passagem.domain.enums.StatusPassagem;
 import com.c4mila.travelhub_api.shared.persistence.AuditableEntity;
 import com.c4mila.travelhub_api.voo.domain.model.Voo;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "passagem")
 public class Passagem extends AuditableEntity {
     @Id
@@ -25,6 +28,10 @@ public class Passagem extends AuditableEntity {
 
     @Column(name = "valor_pago", nullable = false)
     private BigDecimal valorPago;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusPassagem status;
 
     protected Passagem(){}
 
