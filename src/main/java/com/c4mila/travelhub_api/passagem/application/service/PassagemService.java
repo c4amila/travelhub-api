@@ -5,6 +5,7 @@ import com.c4mila.travelhub_api.passagem.domain.repository.PassagemRepository;
 import com.c4mila.travelhub_api.passagem.infrastructure.dto.PassagemRequest;
 import com.c4mila.travelhub_api.passagem.infrastructure.dto.PassagemResponse;
 import com.c4mila.travelhub_api.passagem.infrastructure.exception.AssentoIndisponivelException;
+import com.c4mila.travelhub_api.passagem.infrastructure.exception.PassagemNaoEncontradaException;
 import com.c4mila.travelhub_api.voo.domain.enums.StatusVoo;
 import com.c4mila.travelhub_api.voo.domain.model.Voo;
 import com.c4mila.travelhub_api.voo.domain.repository.VooRepository;
@@ -58,5 +59,19 @@ public class PassagemService {
         log.info("Passagem comprada com sucesso! -> numeroVoo={}, passagem={}", numeroVoo, passagemComprada.getId());
 
         return PassagemResponse.from(passagemComprada);
+    }
+
+    @Transactional(readOnly = true)
+    public PassagemResponse buscarPassagem(Long id){
+        Passagem passagem = passagemRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Passagem não encontrada -> id={}", id);
+                    return new PassagemNaoEncontradaException(
+                            "Passagem não encontrada."
+                    );
+                });
+        log.info("Passagem encontrada -> id={}", id);
+
+        return PassagemResponse.from(passagem);
     }
 }
