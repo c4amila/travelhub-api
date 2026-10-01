@@ -1,5 +1,6 @@
 package com.c4mila.travelhub_api.passagem.infrastructure.dto;
 
+import com.c4mila.travelhub_api.passagem.domain.enums.StatusPassagem;
 import com.c4mila.travelhub_api.passagem.domain.model.Passagem;
 
 import java.math.BigDecimal;
@@ -10,7 +11,8 @@ public record PassagemResponse(
         Long vooId,
         String numeroVoo,
         LocalDateTime dataCompra,
-        BigDecimal valorPago
+        BigDecimal valorPago,
+        StatusPassagem status
 ){
     public static PassagemResponse from(Passagem passagem){
         return new PassagemResponse(
@@ -18,7 +20,8 @@ public record PassagemResponse(
                 passagem.getVooId().getId(),
                 passagem.getVooId().getNumeroVoo(),
                 passagem.getDataCompra(),
-                passagem.getValorPago()
+                passagem.getValorPago(),
+                passagem.getStatus()
         );
     }
 }

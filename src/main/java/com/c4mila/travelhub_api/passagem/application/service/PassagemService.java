@@ -1,10 +1,12 @@
 package com.c4mila.travelhub_api.passagem.application.service;
 
+import com.c4mila.travelhub_api.passagem.domain.enums.StatusPassagem;
 import com.c4mila.travelhub_api.passagem.domain.model.Passagem;
 import com.c4mila.travelhub_api.passagem.domain.repository.PassagemRepository;
 import com.c4mila.travelhub_api.passagem.infrastructure.dto.PassagemRequest;
 import com.c4mila.travelhub_api.passagem.infrastructure.dto.PassagemResponse;
 import com.c4mila.travelhub_api.passagem.infrastructure.exception.AssentoIndisponivelException;
+import com.c4mila.travelhub_api.passagem.infrastructure.exception.PassagemCanceladaException;
 import com.c4mila.travelhub_api.passagem.infrastructure.exception.PassagemNaoEncontradaException;
 import com.c4mila.travelhub_api.voo.domain.enums.StatusVoo;
 import com.c4mila.travelhub_api.voo.domain.model.Voo;
@@ -14,6 +16,8 @@ import com.c4mila.travelhub_api.voo.infrastructure.exception.VooNaoEncontradoExc
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -85,5 +89,41 @@ public class PassagemService {
 
         log.info("Listagem de passagens concluída -> {} passagens", passagens.size());
         return passagens;
+    }
+
+    @Transactional
+    public PassagemResponse cancelarPassagem(Long id){
+        Passagem passagem = passagemRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Tentativa de cancelar uma passagem que não existe -> id={}", id);
+                    return new PassagemNaoEncontradaException(
+                            "Passagem não encontrada."
+                    );
+                });
+
+        if (passagem.getStatus() == StatusPassagem.CANCELADA){
+            log.warn("Tentativa de cancelar passagem já cancelada -> id={}", id);
+            throw new PassagemCanceladaException(
+                    "Não é possível cancelar uma passagem que já está cancelada"
+            );
+        }
+
+        Voo voo = passagem.getVooId();
+        if(!voo.getDataHora().isAfter(LocalDateTime.now())){
+            log.warn("Tentativa de cancelar um voo que já aconteceu -> numeroVoo={}", voo.getNumeroVoo());
+            throw new PassagemCanceladaException(
+                    "Não é possível cancelar uma passagem de um voo que já aconteceu."
+            );
+        }
+
+        passagem.setStatus(StatusPassagem.CANCELADA);
+        voo.setAssentosDisponiveis(voo.getAssentosDisponiveis() + 1);
+        vooRepository.save(voo);
+
+        log.info("Passagem cancelada com sucesso -> id={}, numeroVoo={}", id, voo.getNumeroVoo());
+
+        passagemRepository.save(passagem);
+
+        return PassagemResponse.from(passagem);
     }
 }
